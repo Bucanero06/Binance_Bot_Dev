@@ -1,0 +1,1 @@
+web: gunicorn BOTs.Binance_Bot:app

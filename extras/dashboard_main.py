@@ -15,7 +15,7 @@ from dashboard_depracated.webhook_configuration.render_configuration_table impor
 import redis
 
 # Sidebar
-st.sidebar.title("Binance Futures Scratch Dashboard demo (Testnet)")
+st.sidebar.title("Binance Futures Scratch Dashboard_deprecated_v2 demo (Testnet)")
 
 binance_api_key = "316ee06e009b0ec07b92d15328bed7f0a92c7e1ddb2ce8a755273a6d4f91c802"
 binance_api_secret = "e56b5fbc30dee0b4eb951933b39bc6eb4864a7ae2b60768a6697960b3ff5e838"

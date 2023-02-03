@@ -9,6 +9,23 @@ class Binance_Orderbook_Handler:
     self.exchange = ccxt.{exchange_class}() e.g. ccxt.binance()
     """
 
+    def new_get_orderbook(BOT, symbol, limit=100, clean_orderbook=True):
+        order_book = BOT.ubra.get_order_book(symbol="BTCUSDT", limit=10)
+
+        order_book = pd.DataFrame(order_book)
+        order_book.columns = ["lastUpdateId", "Bid", "Ask"]
+        # order_book["Timestamp"] = pd.to_datetime(order_book["Timestamp"], unit="ms")
+        # order_book = order_book.set_index("Timestamp")
+        if clean_orderbook:
+            order_book = order_book.drop(columns=["lastUpdateId"])
+            # split bid into price and quantity and ask into price and quantity
+            order_book[["Bid Price", "Bid Quantity"]] = order_book["Bid"].apply(pd.Series)
+            order_book[["Ask Price", "Ask Quantity"]] = order_book["Ask"].apply(pd.Series)
+            order_book = order_book.drop(columns=["Bid", "Ask"])
+            order_book = order_book[["Bid Quantity", "Bid Price", "Ask Price", "Ask Quantity"]]
+        return order_book
+        # st.dataframe(order_book, width=200, height=240)
+
     def get_orderbook(BOT, symbol: str, max_orderbook_depth: int = 5):
         order_book = BOT.exchange.fetch_order_book(symbol=symbol,
                                                    limit=max_orderbook_depth if max_orderbook_depth >= 5 else 5)
@@ -23,6 +40,25 @@ class Binance_Orderbook_Handler:
 
         return order_book
 
+    @staticmethod
+    def create_order_history_table(order_history):
+        order_history_table = []
+        for order in order_history:
+            order_history_table.append({
+                "id": order["id"],
+                "symbol": order["symbol"],
+                "side": order["side"],
+                "type": order["type"],
+                "price": order["price"],
+                "amount": order["amount"],
+                "filled": order["filled"],
+                "remaining": order["remaining"],
+                "status": order["status"],
+                "timestamp": order["timestamp"],
+                "datetime": order["datetime"],
+                "fee": order["fee"],
+            })
+        return order_history_table
 
     def prepare_limit_price(BOT, order_book, quantity, side, last_price, max_orderbook_price_offset,
                             min_orderbook_price_offset):

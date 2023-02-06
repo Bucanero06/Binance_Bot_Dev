@@ -1,10 +1,6 @@
 # UNDER HEAVY DEVELOPMENT
 
-# - DO NOT USE LIVE -
-
-# tradingview-binance-strategy-alert-webhook-heroku
-
-![moonshot_logo.png](images%2Fmoonshot_logo.png)
+![moonshot_solutions_logo.png](Dashboard%2Fapps%2Fstatic%2Fassets%2Fimg%2Flogos%2Fmoonshot_solutions_logo.png)
 
 TradingView Strategy Alert Webhook for Binance, including Heroku Procfile and requirements.txt
 

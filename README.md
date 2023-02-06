@@ -1,11 +1,11 @@
-#           Stream-Bot
+# Stream-Bot
 
-![moonshot_solutions_logo.png](Dashboard%2Fapps%2Fstatic%2Fassets%2Fimg%2Flogos%2Fmoonshot_solutions_logo.png)
+![moonshot_solutions_logo.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Flogos%2Fmoonshot_solutions_logo.png)
 
 Premium **TradingView-Binance Dashboard** with Webhook/Live-Stream/API support, includes Heroku Procfile and
-requirements.txt, easy to execute ReadMe Commands for easy manual set up or a docker image to get you up and ready in
-seconds not minutes. Brought you by - [@Bucanero06](https://github.com/Bucanero06), Copyright (c) 2022 -
-present [Moonshot Solutions](moonshot.codes)
+requirements.txt, easy to execute ReadMe Commands for easy manual set up without getting your hands dirty with the
+terminal or a docker image to get you up and ready in seconds not minutes. 
+Brought you by - [@Bucanero06](https://github.com/Bucanero06), Copyright (c) 2022 - present [Moonshot Solutions](moonshot.codes)
 
 <br />
 
@@ -41,9 +41,9 @@ present [Moonshot Solutions](moonshot.codes)
 
 <br />
 
-![Screenshot from 2023-02-03 13-42-21.png](..%2F..%2FPictures%2FScreenshots%2FScreenshot%20from%202023-02-03%2013-42-21.png)
-![Screenshot from 2023-02-03 13-41-31.png](..%2F..%2FPictures%2FScreenshots%2FScreenshot%20from%202023-02-03%2013-41-31.png)
-![websocket_streams_summary_example.png](Dashboard%2Fapps%2Fstatic%2Fassets%2Fimg%2Fillustrations%2Fwebsocket_streams_summary_example.png)
+![tv_page.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fillustrations%2Ftv_page.png)
+![binance_bot_page.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fillustrations%2Fbinance_bot_page.png)
+![websocket_streams_summary_example.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fillustrations%2Fwebsocket_streams_summary_example.png)
 
 <br />
 
@@ -54,7 +54,8 @@ present [Moonshot Solutions](moonshot.codes)
 > **Step 1** - Download and unzip the sources
 
 ```bash
-$ # Get the code
+
+// Get the code
 $ unzip flask-soft-ui-dashboard-enh.zip
 $ cd flask-soft-ui-dashboard-enh
 ```
@@ -64,6 +65,7 @@ $ cd flask-soft-ui-dashboard-enh
 > **Step 2** - Start the APP in `Docker`
 
 ```bash
+
 $ docker-compose up --build 
 ```
 
@@ -186,6 +188,7 @@ $ cd flask-soft-ui-dashboard-enh
 > Install modules via `VENV`
 
 ```bash
+
 $ virtualenv env
 $ source env/bin/activate
 $ pip3 install -r requirements_deprecated.txt
@@ -196,6 +199,7 @@ $ pip3 install -r requirements_deprecated.txt
 > Set Up Flask Environment
 
 ```bash
+
 $ export FLASK_APP=run.py
 $ export FLASK_ENV=development
 ```
@@ -205,11 +209,13 @@ $ export FLASK_ENV=development
 > Set Up Database
 
 ```bash
+
 # Init migration folder
 $ flask db init # to be executed only once         
 ```
 
 ```bash
+
 $ flask db migrate # Generate migration SQL
 $ flask db upgrade # Apply changes
 ```
@@ -219,6 +225,7 @@ $ flask db upgrade # Apply changes
 > Create super admin
 
 ```bash
+
 $ flask create_admin
 ```
 
@@ -227,12 +234,14 @@ $ flask create_admin
 > Start the app
 
 ```bash
+
 $ flask run
 ```
 
 or
 
 ```bash
+
 $ flask run --cert=adhoc # For HTTPS server
 ```
 
@@ -255,6 +264,7 @@ $ pip3 install -r requirements.txt
 > Set Up Flask Environment
 
 ```bash
+
 // CMD 
 $ set FLASK_APP=run.py
 $ set FLASK_ENV=development
@@ -263,6 +273,7 @@ $ set FLASK_ENV=development
 or
 
 ```bash
+
 // Powershell
 $ $env:FLASK_APP = ".\run.py"
 $ $env:FLASK_ENV = "development"
@@ -273,12 +284,14 @@ $ $env:FLASK_ENV = "development"
 > Start the app
 
 ```bash
+
 $ flask run
 ```
 
 or
 
 ```bash
+
 $ flask run --cert=adhoc # For HTTPS server
 ```
 
@@ -306,43 +319,48 @@ an intuitive structure presented bellow:
 ```
 < PROJECT ROOT >
    |
-   |-- apps/
-   |    |
-   |    |-- home/                           # A simple app that serve HTML files
-   |    |    |-- routes.py                  # Define app routes
-   |    |
-   |    |-- authentication/                 # Handles auth routes (login and register)
-   |    |    |-- routes.py                  # Define authentication routes  
-   |    |    |-- models.py                  # Defines models  
-   |    |    |-- forms.py                   # Define auth forms (login and register) 
-   |    |
-   |    |-- static/
-   |    |    |-- <css, JS, images>          # CSS files, Javascripts files
-   |    |
-   |    |-- templates/                      # Templates used to render pages
-   |    |    |-- includes/                  # HTML chunks and components
-   |    |    |    |-- navigation.html       # Top menu component
-   |    |    |    |-- sidebar.html          # Sidebar component
-   |    |    |    |-- footer.html           # App Footer
-   |    |    |    |-- scripts.html          # Scripts common to all pages
-   |    |    |
-   |    |    |-- layouts/                   # Master pages
-   |    |    |    |-- base-fullscreen.html  # Used by Authentication pages
-   |    |    |    |-- base.html             # Used by common pages
-   |    |    |
-   |    |    |-- accounts/                  # Authentication pages
-   |    |    |    |-- login.html            # Login page
-   |    |    |    |-- register.html         # Register page
-   |    |    |
-   |    |    |-- home/                      # UI Kit Pages
-   |    |         |-- index.html            # Index page
-   |    |         |-- 404-page.html         # 404 page
-   |    |         |-- *.html                # All other pages
-   |    |    
-   |  config.py                             # Set up the app
+   |
+   |-- BOTs/
+   |
+   |-- Dashboard/
+        |
+   |    -- apps/
+   |        |
+   |        |-- home/                           # A simple app that serve HTML files
+   |        |    |-- routes.py                  # Define app routes
+   |        |
+   |        |-- authentication/                 # Handles auth routes (login and register)
+   |        |    |-- routes.py                  # Define authentication routes  
+   |        |    |-- models.py                  # Defines models  
+   |        |    |-- forms.py                   # Define auth forms (login and register) 
+   |        |
+   |        |-- static/
+   |        |    |-- <css, JS, images>          # CSS files, Javascripts files
+   |        |
+   |        |-- templates/                      # Templates used to render pages
+   |        |    |-- includes/                  # HTML chunks and components
+   |        |    |    |-- navigation.html       # Top menu component
+   |        |    |    |-- sidebar.html          # Sidebar component
+   |        |    |    |-- footer.html           # App Footer
+   |        |    |    |-- scripts.html          # Scripts common to all pages
+   |        |    |
+   |        |    |-- layouts/                   # Master pages
+   |        |    |    |-- base-fullscreen.html  # Used by Authentication pages
+   |        |    |-- base.html             # Used by common pages
+   |        |    |
+   |        |    |-- accounts/                  # Authentication pages
+   |        |    |    |-- login.html            # Login page
+   |        |    |    |-- register.html         # Register page
+   |        |    |
+   |        |    |-- home/                      # UI Kit Pages
+   |        |         |-- index.html            # Index page
+   |        |         |-- 404-page.html         # 404 page
+   |        |         |-- *.html                # All other pages
+   |        |    
+   |    config.py                             # Set up the app
    |    __init__.py                         # Initialize the app
    |
-   |-- requirements_deprecated.txt                     # App Dependencies
+   |-- requirements.txt                     # App Dependencies
    |
    |-- .env                                 # Inject Configuration via Environment
    |-- run.py                               # Start the app - WSGI gateway

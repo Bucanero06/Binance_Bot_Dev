@@ -1,9 +1,18 @@
 from flask_restx import Resource
-from apps.models import Product, Sale
 from marshmallow import ValidationError
-from apps.authentication.models import Users
-from apps.helpers import validateCurrency, validatePaymentMethod, validateState
-from messages import Messages
+
+try:
+    from apps.models import Product, Sale
+    from apps.authentication.models import Users
+    from apps.helpers import validateCurrency, validatePaymentMethod, validateState
+    from messages import Messages
+
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.models import Product, Sale
+    from Dashboard.apps.authentication.models import Users
+    from Dashboard.apps.helpers import validateCurrency, validatePaymentMethod, validateState
+    from Dashboard.messages import Messages
 
 message = Messages.message
 

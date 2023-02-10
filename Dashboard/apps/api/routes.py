@@ -2,9 +2,16 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-from apps.api import blueprint
-from apps.api.controller.product_controller import ProductCreateList, ProductList
-from apps.api.controller.sale_controller import SaleCreateList, SaleList
+try:
+    from apps.api import blueprint
+    from apps.api.controller.product_controller import ProductCreateList, ProductList
+    from apps.api.controller.sale_controller import SaleCreateList, SaleList
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.api import blueprint
+    from Dashboard.apps.api.controller.product_controller import ProductCreateList, ProductList
+    from Dashboard.apps.api.controller.sale_controller import SaleCreateList, SaleList
+
 from flask_restx import Api
 
 # from flask_restx import Api

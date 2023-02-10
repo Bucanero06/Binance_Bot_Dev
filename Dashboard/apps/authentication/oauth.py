@@ -10,10 +10,21 @@ from flask_dance.contrib.github import github, make_github_blueprint
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_dance.contrib.twitter import twitter, make_twitter_blueprint
 from sqlalchemy.orm.exc import NoResultFound
-from apps.authentication.signals import user_saved_signals
-from apps.helpers import createAccessToken, get_ts
-from apps.config import Config
-from .models import Users, db, OAuth
+
+try:
+    from apps.authentication.signals import user_saved_signals
+    from apps.helpers import createAccessToken, get_ts
+    from apps.config import Config
+
+    from .models import Users, db, OAuth
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.authentication.signals import user_saved_signals
+    from Dashboard.apps.helpers import createAccessToken, get_ts
+    from Dashboard.apps.config import Config
+
+    from Dashboard.apps.authentication.models import Users, db, OAuth
+
 from flask import redirect, url_for
 
 STATUS_SUSPENDED = Config.USERS_STATUS['SUSPENDED']

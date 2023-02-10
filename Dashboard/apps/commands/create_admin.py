@@ -5,10 +5,18 @@ Copyright (c) 2019 - present AppSeed.us
 
 import datetime
 
-from apps.config                 import Config
-from apps.authentication.models  import Users
-from apps.authentication.signals import user_saved_signals
-from apps.helpers                import createAccessToken, emailValidate, password_validate, errorColor, get_ts
+try:
+    from apps.config import Config
+    from apps.authentication.models import Users
+    from apps.authentication.signals import user_saved_signals
+    from apps.helpers import createAccessToken, emailValidate, password_validate, errorColor, get_ts
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.config import Config
+    from Dashboard.apps.authentication.models import Users
+    from Dashboard.apps.authentication.signals import user_saved_signals
+    from Dashboard.apps.helpers import createAccessToken, emailValidate, password_validate, errorColor, get_ts
+
 import getpass
        
 class CreateAdmin:

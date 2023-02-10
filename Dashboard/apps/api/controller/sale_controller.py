@@ -1,12 +1,22 @@
 from flask_restx import Resource
 from flask import request
-from apps.api.exception import InvalidUsage
-from apps.models import Sale
-from apps.api.schemas.sale_schema import SaleSchema, SaleUpdateSchema
-from apps.api.controller.base_contoller import BaseController
-from apps.api.service.sale_service import SaleService
-from apps.helpers import token_required
-from messages import Messages
+try:
+    from apps.api.exception import InvalidUsage
+    from apps.models import Sale
+    from apps.api.schemas.sale_schema import SaleSchema, SaleUpdateSchema
+    from apps.api.controller.base_contoller import BaseController
+    from apps.api.service.sale_service import SaleService
+    from apps.helpers import token_required
+    from messages import Messages
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.api.exception import InvalidUsage
+    from Dashboard.apps.models import Sale
+    from Dashboard.apps.api.schemas.sale_schema import SaleSchema, SaleUpdateSchema
+    from Dashboard.apps.api.controller.base_contoller import BaseController
+    from Dashboard.apps.api.service.sale_service import SaleService
+    from Dashboard.apps.helpers import token_required
+    from Dashboard.messages import Messages
 message = Messages.message
 
 # base controller

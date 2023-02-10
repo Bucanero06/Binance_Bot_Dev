@@ -1,7 +1,11 @@
 import flask
 import traceback 
 from flask import jsonify
-from apps.api.exception import InvalidUsage
+try:
+    from apps.api.exception import InvalidUsage
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.api.exception import InvalidUsage
 
 app = flask.current_app
 

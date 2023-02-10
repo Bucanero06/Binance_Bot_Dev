@@ -5,15 +5,22 @@ Copyright (c) 2019 - present AppSeed.us
 
 from flask import abort
 from flask_login import UserMixin, current_user
-from apps import db, login_manager
 from flask_admin.contrib.sqla import ModelView
-from apps.authentication.util import hash_pass
 from sqlalchemy.exc import SQLAlchemyError
-from apps.exceptions.exception import InvalidUsage
 import datetime as dt
 from sqlalchemy.orm import relationship
 from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
-from apps.config import Config
+try:
+    from apps import db, login_manager
+    from apps.authentication.util import hash_pass
+    from apps.exceptions.exception import InvalidUsage
+    from apps.config import Config
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps import db, login_manager
+    from Dashboard.apps.authentication.util import hash_pass
+    from Dashboard.apps.exceptions.exception import InvalidUsage
+    from Dashboard.apps.config import Config
 
 RoleType = Config.USERS_ROLES
 Status   = Config.USERS_STATUS

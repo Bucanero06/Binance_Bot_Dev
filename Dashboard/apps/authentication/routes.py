@@ -12,22 +12,39 @@ from flask_login import (
     login_user,
     logout_user
 ) 
+try:
+    from apps import db, login_manager
+    from apps.authentication import blueprint
+    from apps.authentication.email import send_email
+    from apps.authentication.forms import LoginForm, CreateAccountForm
+    from apps.authentication.models import UserProfile, Users
 
-from apps import db, login_manager
-from apps.authentication import blueprint
-from apps.authentication.email import send_email
-from apps.authentication.forms import LoginForm, CreateAccountForm
-from apps.authentication.models import UserProfile, Users
+    from apps.authentication.signals import user_saved_signals, delete_user_signals
+    from apps.authentication.token import confirm_token, generate_confirmation_token
+    from apps.authentication.util import hash_pass, new_password_should_be_different, verify_pass
+    from apps.config import Config
+    from apps.helpers import createAccessToken, emailValidate, password_validate, sanitise_fille_name, createFolder, serverImageUrl, uniqueFileName, get_ts
+    from ftp_server import uploadImageFTP
+    from messages import Messages
 
-from apps.authentication.signals import user_saved_signals, delete_user_signals
-from apps.authentication.token import confirm_token, generate_confirmation_token
-from apps.authentication.util import hash_pass, new_password_should_be_different, verify_pass
-from apps.config import Config
-from apps.helpers import createAccessToken, emailValidate, password_validate, sanitise_fille_name, createFolder, serverImageUrl, uniqueFileName, get_ts
-from ftp_server import uploadImageFTP
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps import db, login_manager
+    from Dashboard.apps.authentication import blueprint
+    from Dashboard.apps.authentication.email import send_email
+    from Dashboard.apps.authentication.forms import LoginForm, CreateAccountForm
+    from Dashboard.apps.authentication.models import UserProfile, Users
+
+    from Dashboard.apps.authentication.signals import user_saved_signals, delete_user_signals
+    from Dashboard.apps.authentication.token import confirm_token, generate_confirmation_token
+    from Dashboard.apps.authentication.util import hash_pass, new_password_should_be_different, verify_pass
+    from Dashboard.apps.config import Config
+    from Dashboard.apps.helpers import createAccessToken, emailValidate, password_validate, sanitise_fille_name, createFolder, serverImageUrl, uniqueFileName, get_ts
+    from Dashboard.ftp_server import uploadImageFTP
+    from Dashboard.messages import Messages
+
 from werkzeug.utils import secure_filename
 from flask import Flask, flash
-from messages import Messages
 from flask_dance.contrib.github import github
 from flask_dance.contrib.twitter import twitter
 

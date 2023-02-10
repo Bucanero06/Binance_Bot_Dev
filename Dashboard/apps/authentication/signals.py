@@ -1,7 +1,10 @@
 
 from blinker import Namespace
-from apps.authentication.receiver import UserProfileReceiver
-
+try:
+    from apps.authentication.receiver import UserProfileReceiver
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.authentication.receiver import UserProfileReceiver
 
 event_signals = Namespace()
 

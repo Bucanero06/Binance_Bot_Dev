@@ -1,6 +1,12 @@
 from flask_mail import Message
-from apps import mail
-from apps.config import Config
+try:
+    from apps import mail
+    from apps.config import Config
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps import mail
+    from Dashboard.apps.config import Config
+
 default_sender = Config.MAIL_DEFAULT_SENDER
 
 

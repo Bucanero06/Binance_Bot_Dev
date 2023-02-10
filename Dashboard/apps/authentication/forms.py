@@ -7,9 +7,15 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import Email, DataRequired, EqualTo, InputRequired
 
-from apps.authentication.models import Users
-from apps.helpers import password_validate
-from apps.authentication.util import verify_pass
+try:
+    from apps.authentication.models import Users
+    from apps.helpers import password_validate
+    from apps.authentication.util import verify_pass
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.authentication.models import Users
+    from Dashboard.apps.helpers import password_validate
+    from Dashboard.apps.authentication.util import verify_pass
 
 # login and registration
 

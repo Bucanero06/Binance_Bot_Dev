@@ -1,5 +1,9 @@
 from itsdangerous import URLSafeTimedSerializer
-from apps.config import Config
+try:
+    from apps.config import Config
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.config import Config
 secret_key = Config.SECRET_KEY
 secret_pwd = Config.SECURITY_PASSWORD_SALT
 

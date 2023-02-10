@@ -1,4 +1,5 @@
-# Stream-Bot
+# Stream-Bot (V3 --> V4 **add notes**) 
+(readme.md is still being edited to include diffs between v3 and v4 as well as include deprecated instructions)
 
 ![moonshot_solutions_logo.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Flogos%2Fmoonshot_solutions_logo.png)
 
@@ -7,9 +8,10 @@ requirements.txt, easy to execute ReadMe Commands for easy manual set up without
 terminal or a docker image to get you up and ready in seconds not minutes. 
 Brought you by - [@Bucanero06](https://github.com/Bucanero06), Copyright (c) 2022 - present [Moonshot Solutions](moonshot.codes)
 
+
 <br />
 
-> Features
+> V4 - Features
 
 - `Up-to-date dependencies`, active versioning
 - `DB Tools`: SQLAlchemy ORM, `Flask-Migrate` (schema migrations)
@@ -44,7 +46,7 @@ Brought you by - [@Bucanero06](https://github.com/Bucanero06), Copyright (c) 202
 ![tv_page.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fillustrations%2Ftv_page.png)
 ![binance_bot_page.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fillustrations%2Fbinance_bot_page.png)
 ![websocket_streams_summary_example.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fillustrations%2Fwebsocket_streams_summary_example.png)
-
+![project_dirs_part2.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fproject_dirs_part2.png)![project_dirs_part1.png](Dashboard%2Fstatic%2Fassets%2Fimg%2Fproject_dirs_part1.png)
 <br />
 
 ## ✨ Set-up
@@ -56,8 +58,8 @@ Brought you by - [@Bucanero06](https://github.com/Bucanero06), Copyright (c) 202
 ```bash
 
 // Get the code
-$ unzip flask-soft-ui-dashboard-enh.zip
-$ cd flask-soft-ui-dashboard-enh
+$ unzip Anthony_Binance_Bot_Main.zip
+$ cd Anthony_Binance_Bot_Main
 ```
 
 <br />
@@ -177,8 +179,8 @@ DB_PORT=3306               # MySql port, default = 3306
 > - Download the [code](https://linkhere) and unzip the sources.
 
 ```bash
-$ unzip flask-soft-ui-dashboard-enh.zip
-$ cd flask-soft-ui-dashboard-enh
+$ unzip Anthony_Binance_Bot_Main.zip
+$ cd Anthony_Binance_Bot_Main
 ```
 
 <br />
@@ -191,7 +193,10 @@ $ cd flask-soft-ui-dashboard-enh
 
 $ virtualenv env
 $ source env/bin/activate
-$ pip3 install -r requirements_deprecated.txt
+```
+```bash
+
+$ pip3 install -r requirements.txt
 ```
 
 <br />
@@ -200,7 +205,8 @@ $ pip3 install -r requirements_deprecated.txt
 
 ```bash
 
-$ export FLASK_APP=run.py
+// CMD 
+$ export FLASK_APP=Dashboard/run.py
 $ export FLASK_ENV=development
 ```
 
@@ -210,8 +216,9 @@ $ export FLASK_ENV=development
 
 ```bash
 
-# Init migration folder
-$ flask db init # to be executed only once         
+// Init migration folder
+// to be executed only once        
+$ flask db init  
 ```
 
 ```bash
@@ -266,8 +273,8 @@ $ pip3 install -r requirements.txt
 ```bash
 
 // CMD 
-$ set FLASK_APP=run.py
-$ set FLASK_ENV=development
+$ export FLASK_APP=Dashboard/run.py
+$ export FLASK_ENV=development
 ```
 
 or
@@ -323,7 +330,7 @@ an intuitive structure presented bellow:
    |-- BOTs/
    |
    |-- Dashboard/
-        |
+   |    |
    |    -- apps/
    |        |
    |        |-- home/                           # A simple app that serve HTML files

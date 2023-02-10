@@ -24,7 +24,11 @@ def register_extensions(app):
 
 def register_blueprints(app):
     for module_name in ('authentication', 'home','api'):
-        module = import_module('apps.{}.routes'.format(module_name))
+        try:
+            module = import_module('apps.{}.routes'.format(module_name))
+        except ImportError:
+            # import from dashboard
+            module = import_module('Dashboard.apps.{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
 
 
@@ -38,8 +42,11 @@ def configure_database(app):
     def shutdown_session(exception=None):
         db.session.remove()
 
-from apps.authentication.oauth import github_blueprint, twitter_blueprint
-
+try:
+    from apps.authentication.oauth import github_blueprint, twitter_blueprint
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.authentication.oauth import github_blueprint, twitter_blueprint
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)

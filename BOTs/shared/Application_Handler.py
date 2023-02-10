@@ -28,7 +28,7 @@ class CustomFormatter(logging.Formatter):
 class Application_Handler:
 
     def __init__(self, application_name=__name__, host=None, port=None, test_mode=True, verbose='DEBUG',
-                 app_debug: bool = False,
+                 app_debug: bool = False, app_object: Flask = None,
                  *args,
                  **kwargs):
         self.applications_name = application_name
@@ -49,7 +49,7 @@ class Application_Handler:
 
         assert verbose in ['INFO', 'DEBUG', 'WARNING', 'ERROR', 'CRITICAL'], \
             f"Verbose must be one of the following: INFO, DEBUG, WARNING, ERROR, CRITICAL 🚨 {verbose = }"
-        app = Flask(self.applications_name)
+        app = Flask(self.applications_name) if app_object is None else app_object
         app.logger.setLevel(logging.getLevelName(verbose))
 
         formatter = CustomFormatter()

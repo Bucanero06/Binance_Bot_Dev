@@ -3,9 +3,13 @@ import os
 from PIL import Image
 import base64
 from io import BytesIO
-from apps.helpers import splitUrlGetFilename
-from apps.config import Config
-
+try:
+    from apps.helpers import splitUrlGetFilename
+    from apps.config import Config
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.helpers import splitUrlGetFilename
+    from Dashboard.apps.config import Config
 default_image = Config.DEFAULT_IMAGE_URL
 
 def testFTPConnection():

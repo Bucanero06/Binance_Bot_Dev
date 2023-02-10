@@ -2,8 +2,12 @@
 from ...models import Product
 from marshmallow import fields
 from marshmallow_sqlalchemy import ModelSchema
-from apps import db
 
+try:
+    from apps import db
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps import db
 
 class ProductSchema(ModelSchema):
     class Meta(ModelSchema.Meta):

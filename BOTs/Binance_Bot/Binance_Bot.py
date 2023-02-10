@@ -20,6 +20,7 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
     breathing = False
 
     def __init__(self, tradingview_bot_function,
+                 app_object=None,
                  # redis_url="redis://localhost",
                  ):
         '''
@@ -71,7 +72,8 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
         # Initialize All Classes
         super().__init__(application_name=__name__,
                          test_mode=bool(self.test_mode) if self.test_mode != "live_test" else False,
-                         verbose=env_config["VERBOSE"])
+                         verbose=env_config["VERBOSE"],
+                         app_object=app_object)
 
         # Prepare webhook
         self.tradingview_bot_function = tradingview_bot_function

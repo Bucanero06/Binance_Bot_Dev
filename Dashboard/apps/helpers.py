@@ -3,10 +3,18 @@ import re
 import uuid
 import re
 from colorama import Fore, Style
-from apps.authentication.models import Users
-from apps.config import Config
+
 from marshmallow import ValidationError
-from messages import Messages
+try:
+    from apps.authentication.models import Users
+    from apps.config import Config
+    from messages import Messages
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps.authentication.models import Users
+    from Dashboard.apps.config import Config
+    from Dashboard.messages import Messages
+
 from functools import wraps
 from flask import request
 from uuid import uuid4

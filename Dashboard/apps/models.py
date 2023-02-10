@@ -3,12 +3,18 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 from email.policy import default
-from apps import db
 from sqlalchemy.exc import SQLAlchemyError
-from apps.exceptions.exception import InvalidUsage
 import datetime as dt
 from sqlalchemy.orm import relationship
-from apps.config import Config
+try:
+    from apps import db
+    from apps.exceptions.exception import InvalidUsage
+    from apps.config import Config
+except ImportError:
+    # import from dashboard
+    from Dashboard.apps import db
+    from Dashboard.apps.exceptions.exception import InvalidUsage
+    from Dashboard.apps.config import Config
 
 Currency = Config.CURRENCY
 PAYMENT_TYPE = Config.PAYMENT_TYPE

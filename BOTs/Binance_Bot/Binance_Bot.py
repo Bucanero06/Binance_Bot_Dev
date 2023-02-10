@@ -156,6 +156,7 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                 assert webhook_passphrase, "Add the WEBHOOK_PASSPHRASE variable to your environment variables 🚨"
                 assert exchange.apiKey, "Add the API_KEY variable to your environment variables 🚨"
                 assert exchange.secret, "Add the SECRET_KEY variable to your environment variables 🚨"
+
             except AssertionError as e:
                 self.log.error("Error during Exchange initialization: {}".format(e))
                 raise e

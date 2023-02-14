@@ -108,8 +108,10 @@ class Application_Handler:
             # self.app.run(debug=self.app_debug)
             use_reloader = False if self.app_debug else None
             import threading
-            threading.Thread(target=lambda: self.app.run(host=self.host_name, port=self.port, debug=self.app_debug,
-                                                         use_reloader=use_reloader)).start()
+            # threading.Thread(target=lambda: self.app.run(host=self.host_name, port=self.port, debug=self.app_debug,
+            #                                              use_reloader=use_reloader), daemon=True).start()
+            self.app.run(host=self.host_name, port=self.port, debug=self.app_debug,
+                         use_reloader=use_reloader)
 
             self.app.logger.info(f"{self.applications_name} is now listening for webhooks 🚀")
             self.app.logger.info("we live baby 🤖")

@@ -165,6 +165,11 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
             self.log.debug(f'{exchange.options = }')
             self.log.debug(f'{exchange.verbose = }')
             self.log.debug(f'{exchange.set_sandbox_mode = }')
+
+            # API Keys
+            self.log.debug(f'{exchange.apiKey = }')
+            self.log.debug(f'{exchange.secret = }')
+
             balances = exchange.fetch_balance()
             self.log.debug(f'{balances = }')
 

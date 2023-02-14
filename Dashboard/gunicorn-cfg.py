@@ -1,7 +1,8 @@
 # -*- encoding: utf-8 -*-
 
 bind = '0.0.0.0:8000'
-# workers = 1
+workers = 2
+threads = 100
 # accesslog = '-'
 # loglevel = 'debug'
 # capture_output = True

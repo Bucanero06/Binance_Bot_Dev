@@ -179,9 +179,9 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                     self.log.info(f'   {coin} : {balances[coin]}')
 
         except Exception as e:
-            self.log.info(
-                f"An error here is most likely due to a missing environment variables and/or incorrect API keys 🚨")
-            self.log.info(f"Error initialising bot  {e}")
+            # self.log.info(
+            #     f"An error here is most likely due to a missing environment variables and/or incorrect API keys 🚨")
+            self.log.error(f"Error initialising bot  {e}")
             raise e
 
         return exchange, webhook_passphrase
@@ -195,8 +195,15 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                 'defaultType': self.exchange_type,
             },
         })
+
         exchange.set_sandbox_mode(self._sandbox_mode)
+
         exchange.verbose = True if self.verbose == ["DEBUG", "WARNING", "ERROR", "CRITICAL"] else False
+
+        self.log.debug(f'{exchange.fetchTrades("BTCUSDT") = }')
+
+
+
         return exchange
 
     def tradingview_webhook_handler(BOT):

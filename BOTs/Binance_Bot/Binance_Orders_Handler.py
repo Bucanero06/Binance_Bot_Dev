@@ -9,23 +9,6 @@ class Binance_Orderbook_Handler:
     self.exchange = ccxt.{exchange_class}() e.g. ccxt.binance()
     """
 
-    def new_get_orderbook(BOT, symbol, limit=100, clean_orderbook=True):
-        order_book = BOT.ubra.get_order_book(symbol="BTCUSDT", limit=10)
-
-        order_book = pd.DataFrame(order_book)
-        order_book.columns = ["lastUpdateId", "Bid", "Ask"]
-        # order_book["Timestamp"] = pd.to_datetime(order_book["Timestamp"], unit="ms")
-        # order_book = order_book.set_index("Timestamp")
-        if clean_orderbook:
-            order_book = order_book.drop(columns=["lastUpdateId"])
-            # split bid into price and quantity and ask into price and quantity
-            order_book[["Bid Price", "Bid Quantity"]] = order_book["Bid"].apply(pd.Series)
-            order_book[["Ask Price", "Ask Quantity"]] = order_book["Ask"].apply(pd.Series)
-            order_book = order_book.drop(columns=["Bid", "Ask"])
-            order_book = order_book[["Bid Quantity", "Bid Price", "Ask Price", "Ask Quantity"]]
-        return order_book
-        # st.dataframe(order_book, width=200, height=240)
-
     def get_orderbook(BOT, symbol: str, max_orderbook_depth: int = 5):
         order_book = BOT.exchange.fetch_order_book(symbol=symbol,
                                                    limit=max_orderbook_depth if max_orderbook_depth >= 5 else 5)
@@ -111,7 +94,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                       # BUY: activationPrice should be smaller than the latest price.
                       # SELL: activationPrice should be larger than the latest price.
                       DCA_bool=None,
-                      DCA_total_ammount=None,
+                      DCA_total_amount=None,
                       DCA_opposite_boundry_percentage=None,
                       DCA_number_of_steps=None,
                       ):
@@ -152,7 +135,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
 
             if DCA_bool:
                 DCA_step_length = position_order['price'] * DCA_opposite_boundry_percentage
-                DCA_quantity = DCA_total_ammount / DCA_number_of_steps  # fixme the quantity must meet the min quantity of the symbol allowed
+                DCA_quantity = DCA_total_amount / DCA_number_of_steps  # fixme the quantity must meet the min quantity of the symbol allowed
 
                 for i in range(DCA_number_of_steps):
                     DCA_price = position_order['price'] - DCA_step_length * (

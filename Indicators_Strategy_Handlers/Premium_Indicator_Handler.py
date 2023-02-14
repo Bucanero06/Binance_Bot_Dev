@@ -136,17 +136,17 @@ def premium_indicator_function(BOT, webhook_message):
     trade_size = ((cash_amt_for_trade / last_price) * leverage)
 
     if DCA_bool == True:
-        if DCA_total_ammount == 0:
-            DCA_total_ammount = trade_size
+        if DCA_total_amount == 0:
+            DCA_total_amount = trade_size
             print(f'{trade_size = }')
-            print(f'{DCA_total_ammount = }')
+            print(f'{DCA_total_amount = }')
 
         BOT.log.info(
             f'The initial trade size is {trade_size} {symbol.split("USDT")[0]}'
-            f'DCA is enabled, total amount is {DCA_total_ammount} which will be split into {DCA_number_of_steps}'
-            f' ${DCA_total_ammount / DCA_number_of_steps} per order')
+            f'DCA is enabled, total amount is {DCA_total_amount} which will be split into {DCA_number_of_steps}'
+            f' ${DCA_total_amount / DCA_number_of_steps} per order')
     else:
-        DCA_total_ammount = None
+        DCA_total_amount = None
         BOT.log.info(f'DCA is disabled, total amount is {trade_size}')
 
     side_of_position_to_enter, side_of_position_to_exit, cancel_all_symbol_open_orders = get_side_of_position_to_enter_or_exit(
@@ -195,7 +195,7 @@ def premium_indicator_function(BOT, webhook_message):
                                                    activation_percentage=trailing_stop_loss_activation_percentage,
                                                    #
                                                    # Unpredictable behaviour when using DCA, use at your own risk
-                                                   DCA_bool=DCA_bool, DCA_total_ammount=DCA_total_ammount,
+                                                   DCA_bool=DCA_bool, DCA_total_amount=DCA_total_amount,
                                                    DCA_opposite_boundry_percentage=DCA_opposite_boundary_percentage,
                                                    DCA_number_of_steps=DCA_number_of_steps
                                                    )

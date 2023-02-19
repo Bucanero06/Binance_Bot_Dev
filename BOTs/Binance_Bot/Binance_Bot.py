@@ -59,7 +59,8 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
             ENABLE_RATE_LIMIT=getenv("ENABLE_RATE_LIMIT", default=True),
             EXCHANGE_TYPE=getenv("EXCHANGE_TYPE", default="future"),
             SANDBOX_MODE=getenv("SANDBOX_MODE", default=True),
-            EXCHANGE="binance",  # do not change at this moment
+            # EXCHANGE="binance",  # do not change at this moment
+            EXCHANGE=getenv("EXCHANGE", default="binance"),
 
             BOT_TEST_MODE=getenv("BOT_TEST_MODE",
                                  default=True if getenv("SANDBOX_MODE", default=True) else 'live_test'),
@@ -262,8 +263,8 @@ if __name__ == "__main__":
     if binance_bot_client.test_mode:
         binance_bot_client.test_binance_bot()
     else:
-        # binance_bot_client.up()
-        binance_bot_client.test_binance_bot()
+        binance_bot_client.up()
+        # binance_bot_client.test_binance_bot()
 
     #
     binance_bot_client.log.info(f"Binance Bot ping {binance_bot_client.breathing} 🤖")

@@ -95,12 +95,15 @@ def premium_indicator_function(BOT, webhook_message):
     # Extra exchange settings
     leverage = webhook_message["Order_Settings"].get("leverage", None)
     free_balance_trading_symbol = BOT.exchange.fetch_free_balance()[symbol.split("USDT")[0]]  # e.g. BTC or ETH
-    current_position_info = BOT.exchange.fapiPrivate_get_positionrisk({"symbol": symbol})[0]
-    current_position_amount = float(current_position_info["positionAmt"])
+    # current_position_info = BOT.exchange.fapiPrivate_get_positionrisk({"symbol": symbol})[0]
+    current_position_info = BOT.exchange.fetchPositions(symbols=[symbol])[0]
+    print(f'{current_position_info["info"] = }')
+    current_position_amount = float(current_position_info["info"]["positionAmt"])
 
     # todo can be moved to webhook checks
-    if BOT.exchange.options["defaultType"] == "future" and leverage != current_position_info["leverage"]:
-        BOT.exchange.fapiPrivate_post_leverage({"symbol": symbol, "leverage": leverage})
+    if BOT.exchange.options["defaultType"] == "future" and leverage != current_position_info["info"]["leverage"]:
+        # BOT.exchange.fapiPrivate_post_leverage({"symbol": symbol, "leverage": leverage})
+        BOT.exchange.fapiPrivatePostLeverage({"symbol": symbol, "leverage": leverage})
     elif BOT.exchange.options["defaultType"] == "spot":
         assert leverage == 1, "Leverage must be 1 for spot trading, not changing to default leverage of 1 to allow user " \
                               "to check for mistakes or desired outcome"
@@ -126,7 +129,7 @@ def premium_indicator_function(BOT, webhook_message):
         "cash_amt_for_trade": cash_amt_for_trade,
         "leverage": leverage,
         "free_balance_trading_symbol": free_balance_trading_symbol,
-        "current_position_info": current_position_info,
+        "current_position_info": current_position_info["info"],
         "current_position_amount": current_position_amount,
     })
 

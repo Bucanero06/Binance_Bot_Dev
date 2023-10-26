@@ -1,4 +1,9 @@
 def main():
+    import dotenv
+    # Load .env file
+    dotenv.load_dotenv(dotenv.find_dotenv())
+
+
     # Init Bot and Exchange
     from BOTs.Binance_Bot.Binance_Bot import Binance_Bot
     assert Binance_Bot.breathing == False, "Binance Bot is already breathing 🤖 ... check your code"

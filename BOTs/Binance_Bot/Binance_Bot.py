@@ -227,7 +227,7 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                                                   "Minimal_Strong_Sell": 0, "Exit_Sell": 0, "Clear_Orders": 0}})
         self.up(test_webhook_message=DEBUG_WEBHOOK_MESSAGE,
                 test_endpoint_dict=self.bot_endpoints["tradingview_webhook_handler"])
-        # sleep(SLEEP_BETWEEN_UPDATES)
+        sleep(SLEEP_BETWEEN_UPDATES)
         DEBUG_WEBHOOK_MESSAGE.update({'Signals': {"Buy": 0, "Minimal_Buy": 0, "Strong_Buy": 0, "Minimal_Strong_Buy": 0,
                                                   "Exit_Buy": 0, "Sell": 1, "Minimal_Sell": 0, "Strong_Sell": 0,
                                                   "Minimal_Strong_Sell": 0, "Exit_Sell": 0, "Clear_Orders": 0}})

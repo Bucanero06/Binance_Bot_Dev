@@ -3,8 +3,6 @@ FROM python:3.9
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV FLASK_APP Dashboard/run.py
-ENV DEBUG True
 
 COPY requirements.txt .
 
@@ -16,9 +14,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-#RUN flask db init
-RUN flask db migrate
-RUN flask db upgrade
-
 # gunicorn
-CMD ["gunicorn", "--config", "Dashboard/gunicorn-cfg.py", "Dashboard.run:app"]
+CMD ["gunicorn", "--config", "gunicorn-cfg.py", "BOTs.run_bot:app"]

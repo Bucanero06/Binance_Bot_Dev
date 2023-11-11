@@ -1,7 +1,7 @@
 def main():
-    import dotenv
-    # Load .env file
-    dotenv.load_dotenv(dotenv.find_dotenv())
+    # import dotenv
+    # # Load .env file
+    # dotenv.load_dotenv(dotenv.find_dotenv())
 
 
     # Init Bot and Exchange

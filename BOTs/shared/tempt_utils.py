@@ -1,4 +1,10 @@
 def ensure_bool(var, exception_values=None):
+
+
+    if exception_values is None:
+        exception_values = []
+    if var in exception_values:
+        return var
     if isinstance(var, bool):
         return var
     elif isinstance(var, str):
@@ -15,7 +21,5 @@ def ensure_bool(var, exception_values=None):
             return False
         else:
             raise Exception(f"int var is {var}")
-    elif exception_values and var in exception_values:
-        return var
     else:
         raise Exception(f"var is {var} of type {type(var)}")

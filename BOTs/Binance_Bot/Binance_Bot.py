@@ -46,7 +46,6 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
         '''
         # self.redis_url = redis_url
 
-        self.dummy_orders_mode = None  # todo Not implemented yet
         self.host = host
         self.port = port
 
@@ -69,7 +68,7 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
 
         self.test_mode = ensure_bool(env_config["BOT_TEST_MODE"], exception_values=["live_test"])
 
-        sandbox_mode = env_config["SANDBOX_MODE"]
+        sandbox_mode = ensure_bool(env_config["SANDBOX_MODE"])
         assert self.test_mode in [True, False, "live_test"], "test_mode must be True, False or \"live_test\""
         assert sandbox_mode in [True, False], "sandbox_mode must be True, False"
 
@@ -103,14 +102,12 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                 self.log.warning("WARNING: test_mode is True but SANDBOX_MODE is False, this will send dummy orders "
                                  "to the live exchange using the debug webhook and endpoint_dict provided at uptime "
                                  "to \"up\" 🚨 🚨 🚨\n no execution should occur but please be careful 🚨 🚨 🚨")
-                self.dummy_orders_mode = True
                 self.log.exception("Dummy orders not implemented yet due to variations in API") & exit(
                     1)  # todo: implement dummy orders
 
             else:
                 self.log.info("test_mode is True and SANDBOX_MODE is True, this will execute orders in Test-Net using "
                               "the debug webhook and endpoint_dict provided at uptime to \"up\" 🚨")
-                self.dummy_orders_mode = False
 
         elif self.test_mode == False:
             self.log.info(f"test_mode is False and SANDBOX_MODE is {sandbox_mode}, this will execute "
@@ -121,7 +118,6 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
             self.log.info("test_mode is \"live_test\" , this will listen to incoming webhook (TradingView) "
                           "to any available endpoint in production mode but will not place trades, similar to "
                           "test_mode=True while Sandbox is False, however does not care about the value of latter🚨")
-            self.dummy_orders_mode = True
             self.log.exception("Dummy orders not implemented yet due to variations in API") & exit(
                 1)  # todo: implement dummy orders
 
@@ -196,7 +192,8 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                 'defaultType': self.exchange_type,
             },
         })
-        exchange.set_sandbox_mode(self._sandbox_mode)
+        if self._sandbox_mode == True:
+            exchange.set_sandbox_mode(self._sandbox_mode)
         exchange.verbose = True if self.verbose == ["DEBUG", "WARNING", "ERROR", "CRITICAL"] else False
         return exchange
 

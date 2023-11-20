@@ -3,7 +3,7 @@
 
 Premium **TradingView-Binance Dashboard** with Webhook/Live-Stream/API support, includes Heroku Procfile and
 requirements.txt, easy to execute ReadMe Commands for easy manual set up without getting your hands dirty with the
-terminal or a docker image to get you up and ready in seconds not minutes. Copyright (c) 2023 - present [Carbonyl R&D](carbonyl.org)
+terminal or a docker image to get you up and ready in seconds not minutes.
 
 
 ## 3rd Party App Support

@@ -32,7 +32,7 @@ def get_side_of_position_to_enter_or_exit(webhook_signals, position_amount):
         side_of_position_to_exit = None if side_of_position_to_exit is None else side_of_position_to_exit
 
     # fixme  hotfix to prevent hitting the max open orders limit of binance
-    #   current_position_info = BOT.exchange.fapiPrivate_get_positionrisk({"symbol": symbol})[0]
+    #   current_position_info = BOT.exchange_client.fapiPrivate_get_positionrisk({"symbol": symbol})[0]
     #   current_position_amount = float(current_position_info["positionAmt"])
     if long_position_open and side_of_position_to_enter == 'buy':
         side_of_position_to_enter = None
@@ -50,12 +50,12 @@ def get_side_of_position_to_enter_or_exit(webhook_signals, position_amount):
 def premium_indicator_function(BOT, webhook_message):
     """
     This is the webhook that will be called by the TradingView Alert. It will receive the data from the alert and then
-    place the order on the Binance exchange.
+    place the order on the Binance exchange_client.
     :return:
     """
 
     # Get Symbol
-    symbol = webhook_message["Order_Settings"]["binance_symbol"]
+    symbol = webhook_message["Order_Settings"]["symbol"]
 
     # > Order Settings
     order_type = webhook_message["Order_Settings"]["order_type"]
@@ -86,29 +86,29 @@ def premium_indicator_function(BOT, webhook_message):
     # Get info need for order placement settings
     cash_bet_ammount = webhook_message["Order_Settings"].get("cash_bet_amount", None)
     max_account_risk_per_trade = webhook_message["Account_Settings"].get("max_account_risk_per_trade", None)
-    last_price = BOT.exchange.fetch_ticker(symbol)["last"]
+    last_price = BOT.exchange_client.fetch_ticker(symbol)["last"]
     #
-    USDT_free_balance = BOT.exchange.fetch_free_balance()["USDT"]
+    USDT_free_balance = BOT.exchange_client.fetch_free_balance()["USDT"]
     account_balance_available_for_trade = USDT_free_balance * max_account_risk_per_trade
     cash_amt_for_trade = account_balance_available_for_trade if account_balance_available_for_trade < cash_bet_ammount else cash_bet_ammount
 
-    # Extra exchange settings
+    # Extra exchange_client settings
     leverage = webhook_message["Order_Settings"].get("leverage", None)
-    free_balance_trading_symbol = BOT.exchange.fetch_free_balance()[symbol.split("USDT")[0]]  # e.g. BTC or ETH
-    # current_position_info = BOT.exchange.fapiPrivate_get_positionrisk({"symbol": symbol})[0]
-    current_position_info = BOT.exchange.fetchPositions(symbols=[symbol])[0]
+    free_balance_trading_symbol = BOT.exchange_client.fetch_free_balance()[symbol.split("USDT")[0]]  # e.g. BTC or ETH
+    # current_position_info = BOT.exchange_client.fapiPrivate_get_positionrisk({"symbol": symbol})[0]
+    current_position_info = BOT.exchange_client.fetchPositions(symbols=[symbol])[0]
     print(f'{current_position_info["info"] = }')
     current_position_amount = float(current_position_info["info"]["positionAmt"])
 
     # todo can be moved to webhook checks
-    if BOT.exchange.options["defaultType"] == "future" and leverage != current_position_info["info"]["leverage"]:
-        # BOT.exchange.fapiPrivate_post_leverage({"symbol": symbol, "leverage": leverage})
-        BOT.exchange.fapiPrivatePostLeverage({"symbol": symbol, "leverage": leverage})
-    elif BOT.exchange.options["defaultType"] == "spot":
+    if BOT.exchange_client.options["defaultType"] == "future" and leverage != current_position_info["info"]["leverage"]:
+        # BOT.exchange_client.fapiPrivate_post_leverage({"symbol": symbol, "leverage": leverage})
+        BOT.exchange_client.fapiPrivatePostLeverage({"symbol": symbol, "leverage": leverage})
+    elif BOT.exchange_client.options["defaultType"] == "spot":
         assert leverage == 1, "Leverage must be 1 for spot trading, not changing to default leverage of 1 to allow user " \
                               "to check for mistakes or desired outcome"
 
-    # todo should check the cap/floor ratio to ensure it is within the range of the exchange and the user's risk
+    # todo should check the cap/floor ratio to ensure it is within the range of the exchange_client and the user's risk
     #  tolerance
     print("\n")
     BOT.pretty_print({
@@ -185,7 +185,7 @@ def premium_indicator_function(BOT, webhook_message):
                 amount=abs(current_position_amount),
                 info=dict(symbol=symbol)))
         # orders["closed_position"] = BOT.close_position(
-        #     position_id={BOT.exchange.fetch_positions(symbols=[symbol])[0]["id"]})
+        #     position_id={BOT.exchange_client.fetch_positions(symbols=[symbol])[0]["id"]})
 
     if side_of_position_to_enter:
         orders["order_placed"] = BOT.open_position(last_price=last_price, side=side_of_position_to_enter,

@@ -9,12 +9,12 @@ DEBUG_WEBHOOK_MESSAGE = {
 
     },
     "Order_Settings": {
-        # This is the symbol that you want to trade on Binance
-        "binance_symbol": "BTCUSDT",
+        # This is the symbol that you want to trade on MEXC
+        "symbol": "BTC_USDT",
         "leverage": 1,
         # This is the amount of cash that you want to bet on the trade fixed usdt ammount per trade aka as close as
         # the fluctuation in price allows
-        "cash_bet_amount": 50,
+        "cash_bet_amount": 150,
         # "order_type": "market",
         "order_type": "limit",
 
@@ -25,7 +25,7 @@ DEBUG_WEBHOOK_MESSAGE = {
         "min_orderbook_price_offset": 0,
         "limit_forced_offset": 0,  # is either this or the above 3 settings
 
-        # Test Webhook (used for testing, and will not place orders on Binance or testnet, will only log to console)
+        # Test Webhook (used for testing, and will not place orders on MEXC or testnet, will only log to console)
         # "test_orders": 0  # -1 or 0 = off, 1 = on # todo add this
     },
 
@@ -71,7 +71,7 @@ DEBUG_WEBHOOK_MESSAGE = {
 #         "max_account_risk_per_trade": 1,
 #     },
 #     "Order_Settings": {
-#         "binance_symbol": "BTCUSDT",
+#         "ymbol": "BTCUSDT",
 #         "leverage": 1,
 #         "cash_bet_amount": 50,
 #         "order_type": "limit",

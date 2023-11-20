@@ -3,7 +3,7 @@ from BOTs.Binance_Bot.debug_webhook_message import DEBUG_WEBHOOK_MESSAGE
 from BOTs.shared.Application_Handler import Application_Handler
 from BOTs.shared.Webhook_Handler import Webhook_Handler
 from BOTs.shared.tempt_utils import ensure_bool
-from Indicators_Strategy_Handlers.Premium_Indicator_Handler import premium_indicator_function
+from Indicators_Strategy_Handlers.Binance_Premium_Indicator_Handler import premium_indicator_function
 from time import sleep
 import ccxt
 
@@ -29,9 +29,9 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                         test webhook and endpoint_dict need to be provided at uptime to "up",
                         it will send a test webhook through the test client and then exit the application.
                         If SANDBOX_MODE is True then orders will be executed, otherwise they will be treated as dummies
-                        to avoid erroneous order executions. Note: this is not a test mode for the exchange, it is a test
+                        to avoid erroneous order executions. Note: this is not a test mode for the exchange_client, it is a test
                         mode for the application to ensure that the webhook is being received and the endpoint is
-                        functioning correctly. No execution should occur but please be careful and check the exchange
+                        functioning correctly. No execution should occur but please be careful and check the exchange_client
 
         BOT_TEST_MODE = False will run the application in production mode and will listen for webhooks from TradingView
                         and execute trades. In SANDBOX_MODE the only difference is that the Testnet will be used. In
@@ -100,7 +100,7 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
         if self.test_mode == True:
             if not sandbox_mode:
                 self.log.warning("WARNING: test_mode is True but SANDBOX_MODE is False, this will send dummy orders "
-                                 "to the live exchange using the debug webhook and endpoint_dict provided at uptime "
+                                 "to the live exchange_client using the debug webhook and endpoint_dict provided at uptime "
                                  "to \"up\" 🚨 🚨 🚨\n no execution should occur but please be careful 🚨 🚨 🚨")
                 self.log.exception("Dummy orders not implemented yet due to variations in API") & exit(
                     1)  # todo: implement dummy orders
@@ -122,8 +122,7 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
                 1)  # todo: implement dummy orders
 
         # Exchange
-        # self.exchange, self.webhook_passphrase = self.initialize_exchange(env_config)
-        self.exchange, self.webhook_passphrase = self.initialize_exchange(env_config)
+        self.exchange_client, self.webhook_passphrase = self.initialize_exchange(env_config)
 
         # Done
         self.breathing = True
@@ -131,9 +130,9 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
 
     def initialize_exchange(self, env_config):
         """
-        Initialize the exchange and return the exchange object and webhook passphrase
+        Initialize the exchange_client and return the exchange_client object and webhook passphrase
         :param env_config:
-        :return: exchange, webhook_passphrase
+        :return: exchange_client, webhook_passphrase
         """
 
         assert env_config, "env_config is wtf ... hold on??? check env_config"
@@ -153,21 +152,21 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
         try:
             webhook_passphrase = env_config["WEBHOOK_PASSPHRASE"]
 
-            exchange = self.get_exchange()
+            exchange_client = self.get_exchange_client()
             try:
                 assert webhook_passphrase, "Add the WEBHOOK_PASSPHRASE variable to your environment variables 🚨"
-                assert exchange.apiKey, "Add the API_KEY variable to your environment variables 🚨"
-                assert exchange.secret, "Add the SECRET_KEY variable to your environment variables 🚨"
+                assert exchange_client.apiKey, "Add the API_KEY variable to your environment variables 🚨"
+                assert exchange_client.secret, "Add the SECRET_KEY variable to your environment variables 🚨"
 
             except AssertionError as e:
                 self.log.error("Error during Exchange initialization: {}".format(e))
                 raise e
 
-            self.log.debug(f'{exchange.enableRateLimit = }')
-            self.log.debug(f'{exchange.options = }')
-            self.log.debug(f'{exchange.verbose = }')
-            self.log.debug(f'{exchange.set_sandbox_mode = }')
-            # balances = exchange.fetch_balance()
+            self.log.debug(f'{exchange_client.enableRateLimit = }')
+            self.log.debug(f'{exchange_client.options = }')
+            self.log.debug(f'{exchange_client.verbose = }')
+            self.log.debug(f'{exchange_client.set_sandbox_mode = }')
+            # balances = exchange_client.fetch_balance()
             # self.log.debug(f'{balances = }')
             #
             # self.log.info(f'Asset Coins Free and Total 💱:')
@@ -181,9 +180,9 @@ class Binance_Bot(Application_Handler, Binance_Orders_Handler, Webhook_Handler):
             self.log.info(f"Error initialising bot  {e}")
             raise e
 
-        return exchange, webhook_passphrase
+        return exchange_client, webhook_passphrase
 
-    def get_exchange(self):
+    def get_exchange_client(self):
         exchange = getattr(ccxt, self._exchange_name)({
             'apiKey': self.api_key,
             'secret': self.secret_key,

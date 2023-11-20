@@ -12,7 +12,7 @@ def get_forecast_price(BOT, symbol, forecast_time):
     :return:
     """
     # Get current price
-    current_price = BOT.exchange.fetch_ticker(symbol)["last"]
+    current_price = BOT.exchange_client.fetch_ticker(symbol)["last"]
     # Get current volatility
     current_volatility = get_current_volatility(BOT, symbol)
     # Get current vwap
@@ -96,8 +96,8 @@ def get_bet_size_from_vwap(klines=None, interval_number=5, roll=True):
 def test_the_forecast():
     from unicorn_binance_rest_api import BinanceRestApiManager
 
-    # binance_api_key = BOT.exchange.apiKey
-    # binance_api_secret = BOT.exchange.secret
+    # binance_api_key = BOT.exchange_client.apiKey
+    # binance_api_secret = BOT.exchange_client.secret
     exchange_name = "binance.com-futures-testnet"
     ubra = BinanceRestApiManager(exchange=exchange_name)
     klines = ubra.get_historical_klines("BTCUSDT", ubra.KLINE_INTERVAL_1MINUTE, "1 day ago UTC")

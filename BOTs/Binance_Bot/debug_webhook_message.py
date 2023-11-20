@@ -10,11 +10,11 @@ DEBUG_WEBHOOK_MESSAGE = {
     },
     "Order_Settings": {
         # This is the symbol that you want to trade on Binance
-        "binance_symbol": "BTCUSDT",
+        "symbol": "BTCUSDT",
         "leverage": 1,
         # This is the amount of cash that you want to bet on the trade fixed usdt ammount per trade aka as close as
         # the fluctuation in price allows
-        "cash_bet_amount": 50,
+        "cash_bet_amount": 150,
         # "order_type": "market",
         "order_type": "limit",
 
@@ -71,7 +71,7 @@ DEBUG_WEBHOOK_MESSAGE = {
 #         "max_account_risk_per_trade": 1,
 #     },
 #     "Order_Settings": {
-#         "binance_symbol": "BTCUSDT",
+#         "symbol": "BTCUSDT",
 #         "leverage": 1,
 #         "cash_bet_amount": 50,
 #         "order_type": "limit",

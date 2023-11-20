@@ -122,7 +122,7 @@ class PaperTrading:
 
     def create_market_order(self, symbol: str, side: str, amount: float):
         '''
-        Simulate a market order using real exchange order book data.
+        Simulate a market order using real exchange_client order book data.
         Log the result into a .csv file and include a unique ID into the logger message
         '''
         try:
@@ -339,7 +339,7 @@ class PaperTrading:
         return mark_price
 
     def get_order_book(self, symbol, side):
-        '''Fetch order book data from real exchange'''
+        '''Fetch order book data from real exchange_client'''
         book = self.exchange.fetch_order_book(symbol)
         if side == 'buy':
             asks = book['asks']
@@ -369,7 +369,7 @@ class PaperTrading:
             return False
 
     def _update_open_orders(self):
-        '''Update open limit orders using real exchange data'''
+        '''Update open limit orders using real exchange_client data'''
         for symbol in self._orders[self.name]:
             try:
                 if self._orders[self.name][symbol]:

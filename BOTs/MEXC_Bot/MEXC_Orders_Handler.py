@@ -2,20 +2,28 @@
 import ccxt
 import pandas as pd
 
+from BOTs.MEXC_Bot.client import futures
 
-class Binance_Orderbook_Handler:
+
+class MEXC_Orderbook_Handler:
     """Expects from BOT:
     self.log = flask_app.logging
-    self.exchange = ccxt.{exchange_class}() e.g. ccxt.binance()
+    self.exchange_client = ccxt.{exchange_class}() e.g. ccxt.mexc()
     """
 
+    def __init__(self):
+        self.exchange_client:futures.HTTP  = None
+
     def get_orderbook(BOT, symbol: str, max_orderbook_depth: int = 5):
-        order_book = BOT.exchange.fetch_order_book(symbol=symbol,
-                                                   limit=max_orderbook_depth if max_orderbook_depth >= 5 else 5)
+        # order_book = BOT.exchange_client.fetch_order_book(symbol=symbol,
+        #                                            limit=max_orderbook_depth if max_orderbook_depth >= 5 else 5)
+
+        order_book = BOT.exchange_client.get_depth(symbol=symbol,
+                                                   limit=max_orderbook_depth if max_orderbook_depth >= 5 else 5)['data']
 
         # Pretty print orderbook asks and bids
-        BOT.log.info(f'\n{"Timestamp"}       -    {"Datetime"}')
-        BOT.log.info(f'{order_book["timestamp"]}   -   {order_book["datetime"]}')
+        BOT.log.info(f'\n{"Timestamp"}')
+        BOT.log.info(f'{order_book["timestamp"]}')
         for order_book_side in ['asks', 'bids']:
             BOT.log.info(f"{order_book_side.capitalize()}:")
             for order_book_price, order_book_quantity in order_book[order_book_side]:
@@ -23,6 +31,25 @@ class Binance_Orderbook_Handler:
 
         return order_book
 
+    @staticmethod
+    def create_order_history_table(order_history):
+        order_history_table = []
+        for order in order_history:
+            order_history_table.append({
+                "id": order["id"],
+                "symbol": order["symbol"],
+                "side": order["side"],
+                "type": order["type"],
+                "price": order["price"],
+                "amount": order["amount"],
+                "filled": order["filled"],
+                "remaining": order["remaining"],
+                "status": order["status"],
+                "timestamp": order["timestamp"],
+                "datetime": order["datetime"],
+                "fee": order["fee"],
+            })
+        return order_history_table
 
     def prepare_limit_price(BOT, order_book, quantity, side, last_price, max_orderbook_price_offset,
                             min_orderbook_price_offset):
@@ -52,7 +79,7 @@ class Binance_Orderbook_Handler:
         return limit_price
 
 
-class Binance_Orders_Handler(Binance_Orderbook_Handler):
+class MEXC_Orders_Handler(MEXC_Orderbook_Handler):
 
     def open_position(BOT, last_price, side, quantity, symbol,
                       order_type='MARKET',
@@ -75,7 +102,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                       # BUY: activationPrice should be smaller than the latest price.
                       # SELL: activationPrice should be larger than the latest price.
                       DCA_bool=None,
-                      DCA_total_ammount=None,
+                      DCA_total_amount=None,
                       DCA_opposite_boundry_percentage=None,
                       DCA_number_of_steps=None,
                       ):
@@ -91,8 +118,12 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
             '''Position Opening'''
             BOT.log.info(f"Sending {order_type} order  - {side} {quantity} {symbol}")
             if order_type.lower() == 'market':
-                position_order = BOT.exchange.create_order(symbol=symbol, side=side, price=None, type=order_type,
+                position_order = BOT.exchange_client.create_order(symbol=symbol, side=side, price=None, type=order_type,
                                                            amount=quantity, params=position_params)
+
+
+
+
             elif order_type.lower() == 'limit':
                 if not limit_forced_offset:
                     BOT.log.info(f'Using orderbook to calculate limit order price')
@@ -109,20 +140,20 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                     limit_price = last_price * (1 + limit_forced_offset) if side == 'buy' else last_price * (
                             1 - limit_forced_offset)
                 # todo left here , when using the dca the gte behaviour is not working
-                position_order = BOT.exchange.create_order(symbol=symbol, side=side, price=limit_price, type=order_type,
+                position_order = BOT.exchange_client.create_order(symbol=symbol, side=side, price=limit_price, type=order_type,
                                                            amount=quantity, params=position_params)
             else:
                 raise Exception(f"Order type {order_type} not supported")
 
             if DCA_bool:
                 DCA_step_length = position_order['price'] * DCA_opposite_boundry_percentage
-                DCA_quantity = DCA_total_ammount / DCA_number_of_steps  # fixme the quantity must meet the min quantity of the symbol allowed
+                DCA_quantity = DCA_total_amount / DCA_number_of_steps  # fixme the quantity must meet the min quantity of the symbol allowed
 
                 for i in range(DCA_number_of_steps):
                     DCA_price = position_order['price'] - DCA_step_length * (
                             i + 1) if side == 'buy' else position_order['price'] + DCA_step_length * (i + 1)
                     BOT.log.info(f"Sending {order_type} order  - {side} {DCA_quantity} {symbol}")
-                    DCA_order = BOT.exchange.create_order(symbol=symbol, side=side, price=DCA_price,
+                    DCA_order = BOT.exchange_client.create_order(symbol=symbol, side=side, price=DCA_price,
                                                           type=order_type,
                                                           amount=DCA_quantity, params=position_params)
                     BOT.log.info(f"Limit order for {DCA_quantity} placed at {DCA_price} {symbol}")
@@ -149,11 +180,11 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                 except Exception as e:
                     BOT.log.info(f"Error placing take_profit and stop_loss orders {e}")
                     try:
-                        open_orders = BOT.exchange.fetch_open_orders(symbol=symbol)
+                        open_orders = BOT.exchange_client.fetch_open_orders(symbol=symbol)
                         open_order_ids = [order["id"] for order in open_orders]
                         if position_order['id'] in open_order_ids:
                             BOT.log.info(f"Canceling order {position_order['id']}")
-                            BOT.exchange.cancel_order(position_order['id'], symbol=symbol)
+                            BOT.exchange_client.cancel_order(position_order['id'], symbol=symbol)
                         else:
                             BOT.market_close_position(position_order)
                             # todo use limits as well here to limit blow
@@ -181,7 +212,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                         1 + activation_percentage) if side == 'buy' else float(
                     position_order['price']) * (1 - activation_percentage)
 
-                # binance only allows increments of 0.1% for trailing stop loss callbackRate
+                # mexc only allows increments of 0.1% for trailing stop loss callbackRate
                 # so we need to round it to the nearest 0.1%
 
                 try:
@@ -191,7 +222,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                 except Exception as e:
                     BOT.log.error(f"Error placing trailing stop loss order {e}")
                     try:
-                        BOT.exchange.cancel_order(position_order['id'], symbol=symbol)
+                        BOT.exchange_client.cancel_order(position_order['id'], symbol=symbol)
                     except Exception as e:
                         BOT.log.error(f"Error cancelling order {e}")
                         BOT.market_close_position(position_order)
@@ -214,7 +245,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
 
     def cancel_all_symbol_open_orders(BOT, symbol: str):
         # get ids of all open orders
-        open_orders = BOT.exchange.fetch_open_orders(symbol=symbol)
+        open_orders = BOT.exchange_client.fetch_open_orders(symbol=symbol)
         open_order_ids = [order["id"] for order in open_orders]
         # cancel all open orders
 
@@ -222,7 +253,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
         open_order_ids = list(set(open_order_ids))
         for order_id in open_order_ids:
             try:
-                BOT.exchange.cancel_order(order_id, symbol=symbol)  # cancel order
+                BOT.exchange_client.cancel_order(order_id, symbol=symbol)  # cancel order
             except Exception as e:
                 BOT.log.error(f"Error cancelling order {e}")
 
@@ -263,25 +294,25 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
         # if order_json['type'] == 'limit':
         #     stopLossOrder = {}
         #     takeProfitOrder = {}
-        #     # stopLossOrder = BOT.exchange.create_limit_sell_order(symbol=order_json['info']['symbol'],
+        #     # stopLossOrder = BOT.exchange_client.create_limit_sell_order(symbol=order_json['info']['symbol'],
         #     #                                                      amount=order_json['amount'],
         #     #                                                      price=stopLossPrice, params=stopLossParams)
-        #     # takeProfitOrder = BOT.exchange.create_limit_sell_order(symbol=order_json['info']['symbol'],
+        #     # takeProfitOrder = BOT.exchange_client.create_limit_sell_order(symbol=order_json['info']['symbol'],
         #     #                                                      amount=order_json['amount'],
         #     #                                                      price=takeProfitPrice, params=takeProfitParams)
         #
-        #     stopLossOrder = BOT.exchange.createOrder(symbol=order_json['info']['symbol'], type='LIMIT', side=side,
+        #     stopLossOrder = BOT.exchange_client.createOrder(symbol=order_json['info']['symbol'], type='LIMIT', side=side,
         #                                              price=stopLossPrice, amount=order_json['amount'],
         #                                              params=stopLossParams)
-        #     takeProfitOrder = BOT.exchange.createOrder(symbol=order_json['info']['symbol'], type='TAKE_PROFIT', side=side,
+        #     takeProfitOrder = BOT.exchange_client.createOrder(symbol=order_json['info']['symbol'], type='TAKE_PROFIT', side=side,
         #                                                price=takeProfitPrice,
         #                                                amount=order_json['amount'],
         #                                                params=takeProfitParams)
         # else:
-        stopLossOrder = BOT.exchange.create_order(symbol=order_json['info']['symbol'], type='STOP', side=side,
+        stopLossOrder = BOT.exchange_client.create_order(symbol=order_json['info']['symbol'], type='STOP', side=side,
                                                   price=stopLossPrice,
                                                   amount=order_json['amount'], params=stopLossParams)
-        takeProfitOrder = BOT.exchange.create_order(symbol=order_json['info']['symbol'], type='TAKE_PROFIT',
+        takeProfitOrder = BOT.exchange_client.create_order(symbol=order_json['info']['symbol'], type='TAKE_PROFIT',
                                                     side=side,
                                                     price=takeProfitPrice,
                                                     amount=order_json['amount'], params=takeProfitParams)
@@ -302,7 +333,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
                                 'activationPrice': round(activationPrice, 2),
                                 }
         BOT.log.info(f"trailing_stop_params: {trailing_stop_params}")
-        trailingStopOrder = BOT.exchange.create_order(symbol=order_json['info']['symbol'], type='TRAILING_STOP_MARKET',
+        trailingStopOrder = BOT.exchange_client.create_order(symbol=order_json['info']['symbol'], type='TRAILING_STOP_MARKET',
                                                       side=side,
                                                       amount=order_json['amount'], params=trailing_stop_params)
 
@@ -317,7 +348,7 @@ class Binance_Orders_Handler(Binance_Orderbook_Handler):
         try:
             # Cancel the open orders connected to the position
             BOT.cancel_all_symbol_open_orders(order_json['info']['symbol'])
-            close_position = BOT.exchange.create_order(symbol=order_json['info']['symbol'], type="MARKET",
+            close_position = BOT.exchange_client.create_order(symbol=order_json['info']['symbol'], type="MARKET",
                                                        side=opposite_side,
                                                        amount=abs(order_json['amount']),
                                                        params={

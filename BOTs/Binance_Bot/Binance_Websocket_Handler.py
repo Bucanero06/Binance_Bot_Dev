@@ -614,7 +614,7 @@ class BinanceWebSocketApiProcessStreams(object):
         elif exchange == "binance.us":
             unicorn_fied_stream_data = UnicornFy.binance_us_websocket(received_stream_data_json)
         else:
-            app.logger.error("Not a valid exchange: " + str(exchange))
+            app.logger.error("Not a valid exchange_client: " + str(exchange))
 
         # Now you can call different methods for different `channels`, here called `event_types`.
         # Its up to you if you call the methods in the bottom of this file or to call other classes which do what

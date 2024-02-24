@@ -1,4 +1,4 @@
-# Stream-Bot (V3 --> V4 **add notes**) 
+# Stream-Bot (DEPRECATED, check AntBot) 
 (readme.md is still being edited to account for breaking changes in ccxt as well as the mexc migration thus beware of deprecated codebase and instructions)
 
 Premium **TradingView-Binance Dashboard** with Webhook/Live-Stream/API support, includes Heroku Procfile and
